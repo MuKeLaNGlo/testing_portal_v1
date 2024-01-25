@@ -1,0 +1,50 @@
+{% load static %}
+
+{% for item in tests %}
+  <div class="col-lg-4 col-md-6 mt-3 d-flex align-items-stretch">
+    <div class="item-item d-flex flex-column w-100">
+      <img src="{% if item.test.image %}{{ item.test.image.url }}{% else %}{% static 'img/default_test.png' %}{% endif %}" class="img-fluid flex-fill" alt="...">
+      <div class="item-content">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4>{{ item.test.title }}</h4>
+          <p class="price">{{ item.test.status }}</p>  {# Добавляем статус теста #}
+        </div>
+
+        <p>{{ item.test.description }}</p>
+
+        <div class="trainer d-flex justify-content-between align-items-center">
+          {% if user.is_authenticated %}
+            {% if item.test.status == 'Активен' %}
+              {% if user_test and user_test.completed %}
+                <div class="trainer-rank">
+                  <span>{{ user_test.correct_answers }} из {{ item.test.questions.count }} правильных ответов</span>
+                  <br>
+                  <span>из общего количества вопросов</span>
+                </div>
+              {% else %}
+                <div class="trainer-rank">
+                  <span>{{ item.test.users.count }} учеников</span>
+                  <br>
+                  <span>завершили тест</span>
+                </div>
+              {% endif %}
+            {% else %}
+              <span>Тест завершен</span>
+            {% endif %}
+          {% endif %}
+          <div class="trainer-rank align-items-center">
+            <i class="bx bx-clock"></i>&nbsp;{{ item.test.duration_minutes }} мин &nbsp;&nbsp;  {# Добавляем длительность теста #}
+            <i class="bx bx-calendar"></i>&nbsp;{{ item.test.created_at|date:"d.m.Y" }}  {# Добавляем дату создания теста #}
+          </div>
+        </div>
+        {% if user.is_authenticated %}
+          {% if item.test.status == 'Активен' and not item.completed %}
+            <a href="{% url 'testing:test' item.test.id %}" class="btn btn-success mt-3 w-100">Пройти тест</a>
+          {% elif item.completed %}
+            <button class="btn btn-secondary mt-3 w-100" disabled>У вас {{item.right_questions}} из {{item.questions_count}} правильных ответов</button>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endfor %}

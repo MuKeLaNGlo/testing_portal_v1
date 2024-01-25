@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Test platform{% endblock %}
+
+{% block content %}
+  <section id="login" class="login">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h2 class="text-center mb-4">Login</h2>
+
+              <div class="tab-content">
+                <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+                  <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+
+                    <div class="form-outline mb-4">
+                        {{ form.username.errors }}
+                        <input type="text" id="loginName" name="username" class="form-control {% if form.username.errors %}is-invalid{% endif %}" />
+                        <label class="form-label" for="loginName">Email or username</label>
+                    </div>
+                    
+                    <div class="form-outline mb-4">
+                        {{ form.password.errors }}
+                        <input type="password" id="loginPassword" name="password" class="form-control {% if form.password.errors %}is-invalid{% endif %}" />
+                        <label class="form-label" for="loginPassword">Password</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mb-3 w-100" onclick="submitForm()">Sign in</button>
+
+                  </form>
+                </div>
+                <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
