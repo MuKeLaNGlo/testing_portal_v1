@@ -3,7 +3,7 @@
 
 ## Установка
 ```sh
-git clone https://github.com/MuKeLaNGlo/django_sprint4.git
+git clone https://github.com/MuKeLaNGlo/testing_portal_v1.git
 ```
 Затем нужно установить зависимости в виртуальное окружение, выполнив следующие команды в каталоге проекта:
 ```sh
