@@ -21,11 +21,6 @@ python manage.py migrate
 python manage.py loaddata data_fixture.json
 ```
 
-
-Есть фикстуры, чтобы их можно применить нужно переместить файл ```db.json``` в папку ```blogicum``` и выполнить команду:
-```sh
-python manage.py loaddata dj.json
-```
 ## Запуск проекта
 Чтобы запустить проект, вы можете использовать следующую команду в каталоге проекта:
 ```sh
