@@ -14,21 +14,6 @@ class AnswerAdmin(admin.ModelAdmin):
     list_display = ("text", "question", "is_correct")
 
 
-# @admin.register(Criterion)
-# class CriteriaAdmin(admin.ModelAdmin):
-#     list_display = ("name", "min_value", "max_value")
-
-
-# @admin.register(TypeCriterion)
-# class TypeCriterionAdmin(admin.ModelAdmin):
-#     list_display = ("name", "display_criterion")
-
-#     def display_criterion(self, obj):
-#         return ", ".join([c.name for c in obj.criterion.all()])
-
-#     display_criterion.short_description = "Criterion"
-
-
 @admin.register(Test)
 class TestAdmin(admin.ModelAdmin):
     list_display = ("title", "status", "created_at")

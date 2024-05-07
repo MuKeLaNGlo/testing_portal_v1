@@ -35,40 +35,6 @@ class Answer(models.Model):
         return self.text
 
 
-# class Criterion(models.Model):
-#     name = models.CharField(max_length=255)
-#     min_value = models.IntegerField()
-#     max_value = models.IntegerField()
-
-#     class Meta:
-#         verbose_name = 'Критерий'
-#         verbose_name_plural = 'Критерии'
-
-#     def __str__(self):
-#         return self.name
-
-
-# class TypeCriterion(models.Model):
-#     name = models.CharField(max_length=255)
-#     criteria = models.ManyToManyField(Criterion, through='TypeCriterionRelation', related_name='type_criteria')
-
-#     class Meta:
-#         verbose_name = 'Тип критерия'
-#         verbose_name_plural = 'Типы критериев'
-
-#     def __str__(self):
-#         return self.name
-
-
-# class TypeCriterionRelation(models.Model):
-#     type_criterion = models.ForeignKey(TypeCriterion, on_delete=models.CASCADE)
-#     criterion = models.ForeignKey(Criterion, on_delete=models.CASCADE)
-
-#     class Meta:
-#         verbose_name = 'Связь типа критерия с критерием'
-#         verbose_name_plural = 'Связи типов критериев с критериями'
-
-
 class Test(models.Model):
     title = models.CharField('название', max_length=255)
     description = models.TextField('описание', max_length=255, blank=True, null=True)
@@ -78,9 +44,6 @@ class Test(models.Model):
     duration_minutes = models.PositiveIntegerField('продолжительность', default=30)
     created_at = models.DateTimeField('дата создания', auto_now_add=True)
     image = models.ImageField('картинка', upload_to='test_images/', null=True, blank=True)
-    # type_criterion = models.ForeignKey(
-    #     TypeCriterion, on_delete=models.SET_NULL, null=True, blank=True
-    # )
 
     class Meta:
         verbose_name = 'тест'
@@ -95,8 +58,8 @@ class Test(models.Model):
 
 
 class UserTest(models.Model):
-    user = models.ForeignKey(User, verbose_name='пользователи', related_name='usertests', on_delete=models.CASCADE)
-    test = models.ForeignKey(Test, verbose_name='тесты', related_name='usertests', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name='пользователь', related_name='usertests', on_delete=models.CASCADE)
+    test = models.ForeignKey(Test, verbose_name='тест', related_name='usertests', on_delete=models.CASCADE)
     completed = models.BooleanField('завершен', default=False)
     start_time = models.DateTimeField('время начала', null=True, blank=True)
     end_time = models.DateTimeField('время завершения', null=True, blank=True)
