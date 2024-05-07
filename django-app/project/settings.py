@@ -10,8 +10,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:8000"]
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -19,7 +17,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "debug_toolbar",
+    "rest_framework",
+    "drf_spectacular",
+    "django_filters",
+
     "testing",
 ]
 
@@ -31,7 +32,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
+
 ]
 
 ROOT_URLCONF = "project.urls"
@@ -83,11 +84,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "ru"
 
-# LANGUAGES = [
-#     ('ru', _('Русский')),
-#     ('en', _('English')),
-# ]
-
 TIME_ZONE = "Asia/Yekaterinburg"
 
 USE_I18N = True
@@ -102,7 +98,7 @@ STATICFILES_DIRS = [
 
 # Media
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_URL = "/media/"
+MEDIA_URL = "media/"
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -112,3 +108,10 @@ LOGIN_URL = "login"
 LOGOUT_URL = "logout"
 LOGOUT_REDIRECT_URL = "logout"
 LOGIN_REDIRECT_URL = "testing:home"
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}
