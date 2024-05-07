@@ -1,0 +1,24 @@
+ACTIVE_RU = "Активен"
+NOT_ACTIVE_RU = "Не активен"
+
+ACTIVE = "ACTIVE"
+NOT_ACTIVE = "NOT_ACTIVE"
+
+STATUS_CHOICES = [
+    (ACTIVE, ACTIVE_RU),
+    (NOT_ACTIVE, NOT_ACTIVE_RU)
+]
+
+EASY_RU = "Легкий"
+MEDIUM_RU = "Средний"
+HARD_RU = "Сложный"
+
+EASY = "EASY"
+MEDIUM = "MEDIUM"
+HARD = "HARD"
+
+DIFFICULTY_CHOICES = [
+    (EASY, EASY_RU),
+    (MEDIUM, MEDIUM_RU),
+    (HARD, HARD_RU),
+]
