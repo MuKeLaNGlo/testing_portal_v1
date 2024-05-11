@@ -9,7 +9,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/backend/')),
-    # path('backend/', include('testing.urls', namespace='testing')),
+    path('backend/', include('testing.urls', namespace='testing')),
     path('backend/admin/', admin.site.urls),
     path('backend/schema/', SpectacularAPIView.as_view(), name='schema'),
     path(

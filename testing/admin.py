@@ -4,14 +4,15 @@ from testing.models import (Answer, Question, Test,
                             UserTest, UserTestResult)
 
 
+class Answer(admin.StackedInline):
+    model = Answer
+    extra = 0
+
+
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
+    inlines = (Answer,)
     list_display = ("text", "difficulty")
-
-
-@admin.register(Answer)
-class AnswerAdmin(admin.ModelAdmin):
-    list_display = ("text", "question", "is_correct")
 
 
 @admin.register(Test)
