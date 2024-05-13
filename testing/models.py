@@ -1,7 +1,16 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from testing import consts
+
+
+class User(AbstractUser):
+    patronymic = models.CharField('отчество', max_length=255, blank=True)
+    is_interviewer = models.BooleanField('интервьюер', default=False)
+
+    class Meta:
+        verbose_name = 'пользователь'
+        verbose_name_plural = 'пользователи'
 
 
 class Question(models.Model):
