@@ -16,6 +16,7 @@ class User(AbstractUser):
 class Question(models.Model):
     text = models.TextField('текст вопроса')
     difficulty = models.CharField('сложность вопроса', max_length=20, choices=consts.DIFFICULTY_CHOICES)
+    author = models.ForeignKey(User, verbose_name='автор', related_name='author_questions', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'вопрос'
@@ -35,6 +36,7 @@ class Answer(models.Model):
     text = models.CharField('текст', max_length=255)
     is_correct = models.BooleanField('является верным', default=False)
     image = models.ImageField('картинка', upload_to='answer_images/', null=True, blank=True)
+    author = models.ForeignKey(User, verbose_name='автор', related_name='author_answers', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'ответ'
@@ -53,6 +55,7 @@ class Test(models.Model):
     duration_minutes = models.PositiveIntegerField('продолжительность', default=30)
     created_at = models.DateTimeField('дата создания', auto_now_add=True)
     image = models.ImageField('картинка', upload_to='test_images/', null=True, blank=True)
+    author = models.ForeignKey(User, verbose_name='автор', related_name='author_tests', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'тест'

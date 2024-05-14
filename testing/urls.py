@@ -7,6 +7,8 @@ app_name = "testing"
 
 router = DefaultRouter()
 router.register('tests', views.Test, basename='test')
+router.register('questions', views.Question, basename='question')
+router.register('answers', views.Answer, basename='answer')
 
 urlpatterns = [
     path('', include(router.urls)),
