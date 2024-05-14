@@ -13,5 +13,5 @@ class Test(ModelViewSet):
             return serializers.TestPreview
         if self.action == 'retrieve':
             return serializers.TestRead
-        if self.action == 'create':
-            return serializers.TestCreate
+        if self.action in ('create'):
+            return serializers.TestWrite

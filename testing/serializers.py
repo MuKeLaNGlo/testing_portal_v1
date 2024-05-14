@@ -6,15 +6,15 @@ from testing import models
 class Answer(serializers.ModelSerializer):
     class Meta:
         model = models.Answer
-        fields = '__all__'
+        fields = ('id', 'text', 'is_correct', 'image')
 
 
 class Question(serializers.ModelSerializer):
-    answer = Answer(many=True, source='answers')
+    answers = Answer(many=True)
 
     class Meta:
         model = models.Question
-        fields = ('id', 'text', 'answer')
+        fields = ('id', 'text', 'answers')
 
 
 class TestRead(serializers.ModelSerializer):
@@ -38,12 +38,25 @@ class TestPreview(serializers.ModelSerializer):
 
 
 class TestWrite(serializers.ModelSerializer):
+    questions = Question(many=True)
+
     class Meta:
         model = models.Test
-        fields = '__all__'
+        fields = (
+            'title',
+            'description',
+            'questions',
+            'status',
+            'duration_minutes',
+        )
 
-
-class TestCreate(serializers.ModelSerializer):
-    class Meta:
-        model = models.Test
-        fields = '__all__'
+    def create(self, validated_data):
+        questions_data = validated_data.pop('questions')
+        test = super().create(validated_data)
+        for question_data in questions_data:
+            answers_data = question_data.pop('answers')
+            question = models.Question.objects.create(**question_data)
+            test.questions.add(question)
+            for answer_data in answers_data:
+                answer = models.Answer.objects.create(question=question, **answer_data)
+        return test
