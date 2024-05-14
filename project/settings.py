@@ -104,10 +104,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = 'testing.User'
 
-LOGIN_URL = "login"
-LOGOUT_URL = "logout"
-LOGOUT_REDIRECT_URL = "logout"
-LOGIN_REDIRECT_URL = "testing:home"
+LOGIN_URL = '/backend/admin/login/'
+LOGOUT_URL = '/backend/admin/logout/'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
