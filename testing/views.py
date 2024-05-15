@@ -12,7 +12,7 @@ from testing import filters, models, serializers, permissions
 class Test(ModelViewSet):
     """Тесты"""
     queryset = models.Test.objects.all()
-    filter_class = filters.TestFilter
+    filterset_class = filters.TestFilter
     permission_classes = (permissions.IsInterwierOrReadOnly,)
 
     def get_serializer_class(self):
