@@ -1,9 +1,12 @@
+from typing import Type
+
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from testing import filters, models, serializers, permissions
@@ -15,7 +18,7 @@ class Test(ModelViewSet):
     filterset_class = filters.TestFilter
     permission_classes = (permissions.IsInterwierOrReadOnly,)
 
-    def get_serializer_class(self):
+    def get_serializer_class(self) -> Type[ModelSerializer]:
         if self.action == 'list':
             return serializers.TestPreview
         if self.action == 'retrieve':
@@ -24,7 +27,7 @@ class Test(ModelViewSet):
             return serializers.TestWrite
         return serializers.TestRead
 
-    def get_serializer_context(self):
+    def get_serializer_context(self) -> dict:
         return {'request': self.request}
 
     @extend_schema(
@@ -64,7 +67,7 @@ class Test(ModelViewSet):
         ],
     )
     @action(detail=True, methods=['post'], permission_classes=(permissions.IsAuthenticatedOrReadOnly,))
-    def submit(self, request: Request, *args, **kwargs):
+    def submit(self, request: Request, *args, **kwargs) -> Response:
         """Результаты теста"""
         test = self.get_object()
         user = request.user

@@ -32,7 +32,7 @@ class TestRead(serializers.ModelSerializer):
             'progress_persent',
         )
 
-    def get_progress_persent(self, obj):
+    def get_progress_persent(self, obj: models.Test):
         user = self.context['request'].user
         try:
             user_test = obj.usertests.get(user=user)
@@ -66,7 +66,7 @@ class TestWrite(serializers.ModelSerializer):
             'duration_minutes',
         )
 
-    def create(self, validated_data):
+    def create(self, validated_data: dict) -> models.Test:
         questions_data = validated_data.pop('questions', [])
         test = models.Test.objects.create(**validated_data)
         for question_data in questions_data:
@@ -81,7 +81,7 @@ class AnswerSubmitSerializer(serializers.Serializer):
     question_id = serializers.IntegerField()
     selected_answer_id = serializers.IntegerField()
 
-    def validate(self, data):
+    def validate(self, data: dict) -> dict:
         try:
             question = Question.objects.get(id=data['question_id'])
         except Question.DoesNotExist:
