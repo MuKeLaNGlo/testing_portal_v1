@@ -6,7 +6,7 @@ from testing import models
 class Answer(serializers.ModelSerializer):
     class Meta:
         model = models.Answer
-        fields = ('id', 'text', 'is_correct', 'image')
+        fields = ('text', 'is_correct')
 
 
 class Question(serializers.ModelSerializer):
@@ -51,12 +51,12 @@ class TestWrite(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        questions_data = validated_data.pop('questions')
-        test = super().create(validated_data)
+        questions_data = validated_data.pop('questions', [])
+        test = models.Test.objects.create(**validated_data)
         for question_data in questions_data:
-            answers_data = question_data.pop('answers')
+            answers_data = question_data.pop('answers', [])
             question = models.Question.objects.create(**question_data)
             test.questions.add(question)
             for answer_data in answers_data:
-                answer = models.Answer.objects.create(question=question, **answer_data)
+                models.Answer.objects.create(question=question, **answer_data)
         return test

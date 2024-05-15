@@ -1,12 +1,33 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
 from testing.models import (Answer, Question, Test,
-                            UserTest, UserTestResult)
+                            UserTest, UserTestResult, User)
 
 
 class Answer(admin.StackedInline):
     model = Answer
     extra = 0
+
+
+class CustomUserAdmin(UserAdmin):
+    list_display = ('id', 'username')
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Личные данные', {'fields': ('first_name', 'last_name', 'patronymic')}),
+        ('Доступы', {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_interviewer')}),
+        ('Активность', {'fields': ('last_login', 'date_joined')}),
+    )
+    add_fieldsets = (
+        (None, {'classes': ('wide',), 'fields': (
+            'username',
+            'password1',
+            'password2',
+        )}),
+    )
+
+
+admin.site.register(User, CustomUserAdmin)
 
 
 @admin.register(Question)
