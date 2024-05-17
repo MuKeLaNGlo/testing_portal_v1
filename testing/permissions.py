@@ -11,6 +11,7 @@ class IsInterwierOrReadOnly(permissions.BasePermission):
         return (
             request.method in permissions.SAFE_METHODS
             or (request.user.is_authenticated and request.user.is_interviewer)
+            or request.user.is_staff
         )
 
     def has_object_permission(self, request: Request, view: APIView, obj: models.Test):

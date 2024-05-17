@@ -69,7 +69,7 @@ class TestPreview(serializers.ModelSerializer):
 
     class Meta:
         model = models.Test
-        fields = ('title', 'status', 'image', 'duration_minutes', 'tags', 'difficulty')
+        fields = ('id', 'title', 'status', 'image', 'duration_minutes', 'tags', 'difficulty')
 
 
 class TestWrite(serializers.ModelSerializer):

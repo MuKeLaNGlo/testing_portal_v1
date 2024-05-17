@@ -24,7 +24,7 @@ class Test(ModelViewSet):
             return serializers.TestPreview
         if self.action == 'retrieve':
             return serializers.TestRead
-        if self.action == 'create':
+        if self.action in ('create', 'partial_update'):
             return serializers.TestWrite
         return serializers.TestRead
 
