@@ -12,6 +12,9 @@ class User(AbstractUser):
         verbose_name = 'пользователь'
         verbose_name_plural = 'пользователи'
 
+    def __str__(self):
+        return self.username
+
 
 class Tag(models.Model):
     name = models.CharField('тема', max_length=255, unique=True)

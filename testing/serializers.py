@@ -7,7 +7,7 @@ from testing import models
 class Answer(serializers.ModelSerializer):
     class Meta:
         model = models.Answer
-        fields = ('text', 'is_correct')
+        fields = ('id', 'text', 'is_correct')
 
 
 class Question(serializers.ModelSerializer):
@@ -27,7 +27,7 @@ class TagWrite(serializers.ModelSerializer):
 class Tag(serializers.ModelSerializer):
     class Meta:
         model = models.Tag
-        fields = '__all__'
+        fields = ('id', 'name', 'author')
 
 
 class TestRead(serializers.ModelSerializer):
@@ -38,6 +38,7 @@ class TestRead(serializers.ModelSerializer):
     class Meta:
         model = models.Test
         fields = (
+            'id',
             'title',
             'description',
             'questions',
