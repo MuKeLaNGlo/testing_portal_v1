@@ -2,6 +2,7 @@ from rest_framework.authtoken.models import Token
 
 from testing import models
 
+
 class AuthorizeError(Exception):
     pass
 

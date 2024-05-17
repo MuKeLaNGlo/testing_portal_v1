@@ -15,6 +15,8 @@ class User(AbstractUser):
 
 class Tag(models.Model):
     name = models.CharField('тема', max_length=255, unique=True)
+    author = models.ForeignKey(User, related_name='tags', on_delete=models.CASCADE)
+
     class Meta:
         verbose_name = 'тег'
         verbose_name_plural = 'теги'

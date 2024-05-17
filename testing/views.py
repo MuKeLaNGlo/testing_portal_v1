@@ -120,6 +120,13 @@ class Answer(ModelViewSet):
     permission_classes = (permissions.IsInterwierOrReadOnly,)
 
 
+class Tag(ModelViewSet):
+    """Теги"""
+    queryset = models.Tag.objects.all()
+    serializer_class = serializers.Tag
+    permission_classes = (permissions.IsInterwierOrReadOnly,)
+
+
 class Auth(APIView):
     """Аутентификация пользователя"""
     authentication_classes = []

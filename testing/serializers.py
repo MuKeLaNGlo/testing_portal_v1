@@ -79,6 +79,7 @@ class TestWrite(serializers.ModelSerializer):
 
     def create(self, validated_data: dict) -> models.Test:
         questions_data = validated_data.pop('questions', [])
+        tags_data = validated_data.pop('tag', [])
         test = models.Test.objects.create(**validated_data)
         for question_data in questions_data:
             answers_data = question_data.pop('answers', [])
@@ -86,7 +87,27 @@ class TestWrite(serializers.ModelSerializer):
             test.questions.add(question)
             for answer_data in answers_data:
                 models.Answer.objects.create(question=question, **answer_data)
+
+        for tag_data in tags_data:
+            tag = models.Tag.objects.create(**tag_data)
+            test.tag.add(tag)
         return test
+
+    def update(self, instance, validated_data: dict) -> models.Test:
+        questions_data = validated_data.pop('questions', [])
+        tags_data = validated_data.pop('tag', [])
+        instance = super().update(instance, validated_data)
+
+        for question_data in questions_data:
+            question = models.Question.objects.get(id=question_data['id'])
+            instance.questions.add(question)
+
+        instance.tags.clear()
+        for tag_data in tags_data:
+            tag, created = models.Tag.objects.get_or_create(**tag_data)
+            instance.tags.add(tag)
+        return instance
+
 
 class AnswerSubmitSerializer(serializers.Serializer):
     question_id = serializers.IntegerField()
