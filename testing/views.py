@@ -7,9 +7,10 @@ from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from testing import filters, models, serializers, permissions
+from testing import datatools, filters, models, serializers, permissions
 
 
 class Test(ModelViewSet):
@@ -29,6 +30,9 @@ class Test(ModelViewSet):
 
     def get_serializer_context(self) -> dict:
         return {'request': self.request}
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
     @extend_schema(
         request=serializers.TestSubmitSerializer,
@@ -111,9 +115,46 @@ class Question(ModelViewSet):
     serializer_class = serializers.Question
     permission_classes = (permissions.IsInterwierOrReadOnly,)
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
 
 class Answer(ModelViewSet):
     """Ответы"""
     queryset = models.Answer.objects.all()
     serializer_class = serializers.Answer
     permission_classes = (permissions.IsInterwierOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
+class Tag(ModelViewSet):
+    """Теги"""
+    queryset = models.Tag.objects.all()
+    serializer_class = serializers.Tag
+    permission_classes = (permissions.IsInterwierOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
+class Auth(APIView):
+    """Аутентификация пользователя"""
+    authentication_classes = []
+    permission_classes = []
+
+    @extend_schema(request=serializers.AuthorizeRequest, responses=serializers.AuthorizeResponse)
+    def post(self, request: Request) -> Response:
+        serializer = serializers.AuthorizeRequest(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            user = datatools.authorize_user(serializer.validated_data)
+        except datatools.AuthorizeError as ex:
+            response_data = {'is_valid': False, 'msg': str(ex)}
+            return Response(data=response_data, status=status.HTTP_400_BAD_REQUEST)
+
+        user_data = serializers.User(instance=user).data
+        response_data = {'is_valid': True, 'token': user.auth_token.key, 'user': user_data}
+        return Response(data=response_data, status=status.HTTP_200_OK)

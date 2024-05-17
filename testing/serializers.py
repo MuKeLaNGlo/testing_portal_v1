@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from testing import models
@@ -17,9 +18,22 @@ class Question(serializers.ModelSerializer):
         fields = ('id', 'text', 'answers')
 
 
+class TagWrite(serializers.ModelSerializer):
+    class Meta:
+        model = models.Tag
+        fields = ('id', 'name')
+
+
+class Tag(serializers.ModelSerializer):
+    class Meta:
+        model = models.Tag
+        fields = '__all__'
+
+
 class TestRead(serializers.ModelSerializer):
     questions = Question(many=True)
     progress_persent = serializers.SerializerMethodField()
+    tags = Tag(many=True)
 
     class Meta:
         model = models.Test
@@ -30,6 +44,8 @@ class TestRead(serializers.ModelSerializer):
             'status',
             'duration_minutes',
             'progress_persent',
+            'tags',
+            'difficulty',
         )
 
     def get_progress_persent(self, obj: models.Test):
@@ -48,13 +64,16 @@ class TestRead(serializers.ModelSerializer):
 
 
 class TestPreview(serializers.ModelSerializer):
+    tags = Tag(many=True)
+
     class Meta:
         model = models.Test
-        fields = ('title', 'status', 'image', 'duration_minutes')
+        fields = ('title', 'status', 'image', 'duration_minutes', 'tags', 'difficulty')
 
 
 class TestWrite(serializers.ModelSerializer):
     questions = Question(many=True)
+    tags = TagWrite(many=True)
 
     class Meta:
         model = models.Test
@@ -64,10 +83,12 @@ class TestWrite(serializers.ModelSerializer):
             'questions',
             'status',
             'duration_minutes',
+            'tags'
         )
 
     def create(self, validated_data: dict) -> models.Test:
         questions_data = validated_data.pop('questions', [])
+        tags_data = validated_data.pop('tags', [])
         test = models.Test.objects.create(**validated_data)
         for question_data in questions_data:
             answers_data = question_data.pop('answers', [])
@@ -75,7 +96,12 @@ class TestWrite(serializers.ModelSerializer):
             test.questions.add(question)
             for answer_data in answers_data:
                 models.Answer.objects.create(question=question, **answer_data)
+
+        for tag_data in tags_data:
+            tag = models.Tag.objects.create(**tag_data)
+            test.tag.add(tag)
         return test
+
 
 class AnswerSubmitSerializer(serializers.Serializer):
     question_id = serializers.IntegerField()
@@ -96,5 +122,45 @@ class AnswerSubmitSerializer(serializers.Serializer):
             raise serializers.ValidationError('Выбранный ответ не связан с данным вопросом.')
         return data
 
+
 class TestSubmitSerializer(serializers.Serializer):
     answers = serializers.ListField(child=AnswerSubmitSerializer())
+
+
+class User(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+
+    class Meta:
+        model = models.User
+        fields = (
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'patronymic',
+            'username',
+            'password',
+        )
+
+    def create(self, validated_data: dict) -> models.User:
+        validated_data['password'] = make_password(validated_data['password'])
+        user = super().create(validated_data)
+        return user
+
+    def update(self, instance: models.User, validated_data: dict) -> models.User:
+        if validated_data.get('password'):
+            validated_data['password'] = make_password(validated_data.get('password'))
+        user = super().update(instance, validated_data)
+        return user
+
+
+class AuthorizeRequest(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+
+class AuthorizeResponse(serializers.Serializer):
+    is_valid = serializers.BooleanField()
+    msg = serializers.CharField(required=False)
+    token = serializers.CharField(required=False)
+    user = User(required=False)

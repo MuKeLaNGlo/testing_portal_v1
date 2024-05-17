@@ -12,5 +12,5 @@ router.register('answers', views.Answer, basename='answer')
 
 urlpatterns = [
     path('', include(router.urls)),
-    # Добавьте другие URL-маршруты, если это необходимо
+    path('auth/', views.Auth.as_view(), name='auth'),
 ]
