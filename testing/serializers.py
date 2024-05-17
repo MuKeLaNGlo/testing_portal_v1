@@ -99,14 +99,16 @@ class TestWrite(serializers.ModelSerializer):
         tags_data = validated_data.pop('tag', [])
         instance = super().update(instance, validated_data)
 
-        for question_data in questions_data:
-            question = models.Question.objects.get(id=question_data['id'])
-            instance.questions.add(question)
+        if questions_data is not None:
+            for question_data in questions_data:
+                question = models.Question.objects.get(id=question_data['id'])
+                instance.questions.add(question)
 
-        instance.tags.clear()
-        for tag_data in tags_data:
-            tag, created = models.Tag.objects.get_or_create(**tag_data)
-            instance.tags.add(tag)
+        if tags_data is not None:
+            instance.tags.clear()
+            for tag_data in tags_data:
+                tag, created = models.Tag.objects.get_or_create(**tag_data)
+                instance.tags.add(tag)
         return instance
 
 
