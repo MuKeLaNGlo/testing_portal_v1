@@ -19,6 +19,7 @@ class TestFilter(django_filters.FilterSet):
     tag = django_filters.CharFilter(method='filter_tag')
     term = django_filters.CharFilter(method='filter_term')
     difficulty = django_filters.ChoiceFilter(choices=consts.DIFFICULTY_CHOICES)
+
     class Meta:
         model = models.Test
         fields = [

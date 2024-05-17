@@ -20,6 +20,7 @@ class IsInterwierOrReadOnly(permissions.BasePermission):
             or request.user.is_staff
         )
 
+
 class IsAuthenticatedOrReadOnly(permissions.BasePermission):
     def has_permission(self, request: Request, view: APIView):
         return (

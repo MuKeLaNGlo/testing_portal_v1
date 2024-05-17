@@ -59,6 +59,7 @@ class TestRead(serializers.ModelSerializer):
 
 class TestPreview(serializers.ModelSerializer):
     tag = Tag(many=True)
+
     class Meta:
         model = models.Test
         fields = ('title', 'status', 'image', 'duration_minutes', 'tag', 'difficulty')
@@ -128,12 +129,14 @@ class AnswerSubmitSerializer(serializers.Serializer):
             raise serializers.ValidationError('Выбранный ответ не связан с данным вопросом.')
         return data
 
+
 class TestSubmitSerializer(serializers.Serializer):
     answers = serializers.ListField(child=AnswerSubmitSerializer())
 
 
 class User(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
+
     class Meta:
         model = models.User
         fields = (
