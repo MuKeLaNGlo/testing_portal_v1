@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from testing import models
@@ -98,3 +99,41 @@ class AnswerSubmitSerializer(serializers.Serializer):
 
 class TestSubmitSerializer(serializers.Serializer):
     answers = serializers.ListField(child=AnswerSubmitSerializer())
+
+
+class User(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+    class Meta:
+        model = models.User
+        fields = (
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'patronymic',
+            'username',
+            'password',
+        )
+
+    def create(self, validated_data: dict) -> models.User:
+        validated_data['password'] = make_password(validated_data['password'])
+        user = super().create(validated_data)
+        return user
+
+    def update(self, instance: models.User, validated_data: dict) -> models.User:
+        if validated_data.get('password'):
+            validated_data['password'] = make_password(validated_data.get('password'))
+        user = super().update(instance, validated_data)
+        return user
+
+
+class AuthorizeRequest(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+
+class AuthorizeResponse(serializers.Serializer):
+    is_valid = serializers.BooleanField()
+    msg = serializers.CharField(required=False)
+    token = serializers.CharField(required=False)
+    user = User(required=False)
