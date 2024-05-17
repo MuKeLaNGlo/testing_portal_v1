@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from testing.models import (Answer, Question, Test,
-                            UserTest, UserTestResult, User)
+                            UserTest, UserTestResult, User, Tag)
 
 
 class Answer(admin.StackedInline):
@@ -34,6 +34,11 @@ admin.site.register(User, CustomUserAdmin)
 class QuestionAdmin(admin.ModelAdmin):
     inlines = (Answer,)
     list_display = ("text", "difficulty")
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
 
 
 @admin.register(Test)

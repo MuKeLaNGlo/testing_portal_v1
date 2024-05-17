@@ -18,9 +18,16 @@ class Question(serializers.ModelSerializer):
         fields = ('id', 'text', 'answers')
 
 
+class Tag(serializers.ModelSerializer):
+    class Meta:
+        model = models.Tag
+        fields = '__all__'
+
+
 class TestRead(serializers.ModelSerializer):
     questions = Question(many=True)
     progress_persent = serializers.SerializerMethodField()
+    tag = Tag(many=True)
 
     class Meta:
         model = models.Test
@@ -31,6 +38,8 @@ class TestRead(serializers.ModelSerializer):
             'status',
             'duration_minutes',
             'progress_persent',
+            'tag',
+            'difficulty',
         )
 
     def get_progress_persent(self, obj: models.Test):
@@ -49,9 +58,10 @@ class TestRead(serializers.ModelSerializer):
 
 
 class TestPreview(serializers.ModelSerializer):
+    tag = Tag(many=True)
     class Meta:
         model = models.Test
-        fields = ('title', 'status', 'image', 'duration_minutes')
+        fields = ('title', 'status', 'image', 'duration_minutes', 'tag', 'difficulty')
 
 
 class TestWrite(serializers.ModelSerializer):
