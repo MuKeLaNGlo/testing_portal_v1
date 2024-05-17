@@ -31,6 +31,9 @@ class Test(ModelViewSet):
     def get_serializer_context(self) -> dict:
         return {'request': self.request}
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
     @extend_schema(
         request=serializers.TestSubmitSerializer,
         responses={
@@ -112,6 +115,9 @@ class Question(ModelViewSet):
     serializer_class = serializers.Question
     permission_classes = (permissions.IsInterwierOrReadOnly,)
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
 
 class Answer(ModelViewSet):
     """Ответы"""
@@ -119,12 +125,18 @@ class Answer(ModelViewSet):
     serializer_class = serializers.Answer
     permission_classes = (permissions.IsInterwierOrReadOnly,)
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
 
 class Tag(ModelViewSet):
     """Теги"""
     queryset = models.Tag.objects.all()
     serializer_class = serializers.Tag
     permission_classes = (permissions.IsInterwierOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class Auth(APIView):

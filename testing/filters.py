@@ -13,7 +13,7 @@ class TestFilter(django_filters.FilterSet):
             'title',
             'description',
             ('usertests__completed', 'completed'),
-            'tag',
+            'tags',
         )
     )
     tag = django_filters.CharFilter(method='filter_tag')
@@ -31,11 +31,11 @@ class TestFilter(django_filters.FilterSet):
         ]
 
     def filter_tag(self, queryset: QuerySet, name: str, value: str) -> QuerySet:
-        return queryset.filter(tag__name__icontains=value)
+        return queryset.filter(tags__name__icontains=value)
 
     def filter_term(self, queryset: QuerySet, name: str, value: str) -> QuerySet:
         return queryset.filter(
             Q(title__icontains=value) |
             Q(description__icontains=value) |
-            Q(tag__name__icontains=value)
+            Q(tags__name__icontains=value)
         )

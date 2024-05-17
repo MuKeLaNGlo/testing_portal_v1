@@ -18,6 +18,12 @@ class Question(serializers.ModelSerializer):
         fields = ('id', 'text', 'answers')
 
 
+class TagWrite(serializers.ModelSerializer):
+    class Meta:
+        model = models.Tag
+        fields = ('id', 'name')
+
+
 class Tag(serializers.ModelSerializer):
     class Meta:
         model = models.Tag
@@ -27,7 +33,7 @@ class Tag(serializers.ModelSerializer):
 class TestRead(serializers.ModelSerializer):
     questions = Question(many=True)
     progress_persent = serializers.SerializerMethodField()
-    tag = Tag(many=True)
+    tags = Tag(many=True)
 
     class Meta:
         model = models.Test
@@ -38,7 +44,7 @@ class TestRead(serializers.ModelSerializer):
             'status',
             'duration_minutes',
             'progress_persent',
-            'tag',
+            'tags',
             'difficulty',
         )
 
@@ -58,15 +64,16 @@ class TestRead(serializers.ModelSerializer):
 
 
 class TestPreview(serializers.ModelSerializer):
-    tag = Tag(many=True)
+    tags = Tag(many=True)
 
     class Meta:
         model = models.Test
-        fields = ('title', 'status', 'image', 'duration_minutes', 'tag', 'difficulty')
+        fields = ('title', 'status', 'image', 'duration_minutes', 'tags', 'difficulty')
 
 
 class TestWrite(serializers.ModelSerializer):
     questions = Question(many=True)
+    tags = TagWrite(many=True)
 
     class Meta:
         model = models.Test
@@ -76,11 +83,12 @@ class TestWrite(serializers.ModelSerializer):
             'questions',
             'status',
             'duration_minutes',
+            'tags'
         )
 
     def create(self, validated_data: dict) -> models.Test:
         questions_data = validated_data.pop('questions', [])
-        tags_data = validated_data.pop('tag', [])
+        tags_data = validated_data.pop('tags', [])
         test = models.Test.objects.create(**validated_data)
         for question_data in questions_data:
             answers_data = question_data.pop('answers', [])
@@ -93,24 +101,6 @@ class TestWrite(serializers.ModelSerializer):
             tag = models.Tag.objects.create(**tag_data)
             test.tag.add(tag)
         return test
-
-    def update(self, instance, validated_data: dict) -> models.Test:
-        questions_data = validated_data.pop('questions', [])
-        tags_data = validated_data.pop('tag', [])
-        instance = super().update(instance, validated_data)
-
-        if questions_data is not None:
-            instance.questions.clear()
-        for question_data in questions_data:
-            question = models.Question.objects.get(id=question_data['id'])
-            instance.questions.add(question)
-
-        if tags_data is not None:
-            instance.tags.clear()
-        for tag_data in tags_data:
-            tag, created = models.Tag.objects.get_or_create(**tag_data)
-            instance.tags.add(tag)
-        return instance
 
 
 class AnswerSubmitSerializer(serializers.Serializer):

@@ -16,6 +16,7 @@ class User(AbstractUser):
 class Tag(models.Model):
     name = models.CharField('тема', max_length=255, unique=True)
     author = models.ForeignKey(User, related_name='tags', on_delete=models.CASCADE)
+    test = models.ManyToManyField('Test', verbose_name='тесты', related_name='tags', blank=True)
 
     class Meta:
         verbose_name = 'тег'
@@ -68,7 +69,6 @@ class Test(models.Model):
     created_at = models.DateTimeField('дата создания', auto_now_add=True)
     image = models.ImageField('картинка', upload_to='test_images/', null=True, blank=True)
     author = models.ForeignKey(User, verbose_name='автор', related_name='author_tests', on_delete=models.CASCADE)
-    tag = models.ManyToManyField(Tag, verbose_name='теги', related_name='test_tags', blank=True, null=True)
     difficulty = models.CharField('сложность теста', max_length=20, choices=consts.DIFFICULTY_CHOICES)
 
     class Meta:
