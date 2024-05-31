@@ -9,6 +9,7 @@ router = DefaultRouter()
 router.register('tests', views.Test, basename='test')
 router.register('questions', views.Question, basename='question')
 router.register('answers', views.Answer, basename='answer')
+router.register('tags', views.Tag, basename='tag')
 
 urlpatterns = [
     path('', include(router.urls)),
